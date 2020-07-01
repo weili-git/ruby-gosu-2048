@@ -2,9 +2,6 @@
 
 require "gosu"
 
-module ZOrder
-  BACKGROUND, STARS, PLAYER, UI = *0..3
-end
 @@dict = Hash.new(0xff_111111)
 @@dict = {"0" => 0xff_cdc1b4, "2" => 0xff_eee4da, "4" => 0xff_ede0c8, "8" => 0xff_f2b179, "16" => 0xff_f59563,
         "32" => 0xff_f67c5f, "64" => 0xff_f65e3b, "128" => 0xff_edcf72, "256" => 0xff_edcc61, "512" => 0xff_ffffff}
