@@ -7,10 +7,12 @@ module ZOrder
 end
 @@dict = Hash.new(0xff_111111)
 @@dict = {"0" => 0xff_cdc1b4, "2" => 0xff_eee4da, "4" => 0xff_ede0c8, "8" => 0xff_f2b179, "16" => 0xff_f59563,
-        "32" => 0xff_f67c5f, "64" => 0xff_f65e3b, "128" => 0xff_edcf72, "256" => 0xff_edcc61, "512" => 0xff_ffffff}
+        "32" => 0xff_f67c5f, "64" => 0xff_f65e3b, "128" => 0xff_edcf72, "256" => 0xff_edcc61, "512" => 0xff_ecc850,
+        "1024" => 0xff_ebc33d, "2048" => 0xff_eec22d}
 class Map4x4
   attr_reader :map
   def initialize
+    @terminate = false
     @size = 4
     @map = Array.new(4) { Array.new(4, 0) }
     2.times do 
@@ -60,7 +62,7 @@ class Map4x4
         b.push(0) # 补0
       end
       changed = true unless a.eql? b
-      @map[i] = b  #a[:] = b怎么实现
+      @map[i] = b  #a[:] = b
     end
     return changed
   end
@@ -79,15 +81,22 @@ class Map4x4
       end
     end
     system("cls")
-    puts "game over"
+    puts "Game over."
+    @terminate = true
     return true
   end
 
   def check_win
-    return true if @map.flatten.max == 2048
+    if @map.flatten.max == 2048
+      system("cls")
+      puts "You win!"
+      @terminate = true
+      return true
+    end 
   end
 
   def moveUp
+    return if @terminate
     self.rotate
     self.add if self.adjust
     3.times do 
@@ -97,6 +106,7 @@ class Map4x4
   end
 
   def moveRight
+    return if @terminate
     2.times do 
       self.rotate 
     end
@@ -108,6 +118,7 @@ class Map4x4
   end
 
   def moveDown
+    return if @terminate
     3.times do
       self.rotate
     end
@@ -117,6 +128,7 @@ class Map4x4
   end
 
   def moveLeft
+    return if @terminate
     self.add if self.adjust
     self.print
   end
@@ -155,15 +167,19 @@ class MainLoop < Gosu::Window
     when Gosu::KB_LEFT
       @m.moveLeft
       @m.check_lose
+      @m.check_win
     when Gosu::KB_RIGHT
       @m.moveRight
       @m.check_lose
+      @m.check_win
     when Gosu::KB_UP
       @m.moveUp
       @m.check_lose
+      @m.check_win
     when Gosu::KB_DOWN
       @m.moveDown
       @m.check_lose
+      @m.check_win
     when Gosu::KB_ESCAPE
       close
     else
