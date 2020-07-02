@@ -2,6 +2,9 @@
 
 require "gosu"
 
+module ZOrder
+  BACKGROUND, STARS, PLAYER, UI = *0..3
+end
 @@dict = Hash.new(0xff_111111)
 @@dict = {"0" => 0xff_cdc1b4, "2" => 0xff_eee4da, "4" => 0xff_ede0c8, "8" => 0xff_f2b179, "16" => 0xff_f59563,
         "32" => 0xff_f67c5f, "64" => 0xff_f65e3b, "128" => 0xff_edcf72, "256" => 0xff_edcc61, "512" => 0xff_ffffff}
@@ -127,7 +130,7 @@ class MainLoop < Gosu::Window
     @p = 20  # padding
     @w, @h = 128, 128
     @m = Map4x4.new
-    @font = Gosu::Font.new(20)
+    @font = Gosu::Font.new(30)
   end
 
   def needs_cursor?
@@ -142,7 +145,7 @@ class MainLoop < Gosu::Window
     @m.map.each_with_index do |u, i|
       u.each_with_index do |v, j|
         Gosu.draw_rect(@p+(@w+@p)*j, @p+(@h+@p)*i, @w, @h, Gosu::Color.argb(@@dict[v.to_s]))
-        @font.draw(v.to_s, @p+(@w+@p)*j+@w/2, @p+(@h+@p)*i+@h/2, 20, 1.0, 1.0, Gosu::Color::BLACK)
+        @font.draw_text_rel(v.to_s, @p+(@w+@p)*j+@w/2, @p+(@h+@p)*i+@h/2, 20, 0.5, 0.5, 1.0, 1.0, Gosu::Color::BLACK)
       end
     end
   end
